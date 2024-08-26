@@ -1,4 +1,4 @@
-# WoW - Quest Reader
+# WoW - Quest Reader Addon
 
 # Note - This only works with The War Within quests, so far.
 World of Warcraft addon that reads quest text using a similar voice as the NPC quest giver. Each quest text dialogue has a generated audio file that was read using an AI voicemodel generated from their in-game audio.
