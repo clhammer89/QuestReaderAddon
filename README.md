@@ -3,7 +3,7 @@
 World of Warcraft addon that reads quest text using a similar voice as the NPC quest giver. Each quest text dialogue has a generated audio file that was read using an AI voicemodel generated from their in-game audio.
 
 Usage:
-If downloading directly, just stick the entire folder into your WoW addon folder, generally located at `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns`
+If downloading directly, download latest release here https://github.com/clhammer89/wow-questreader/releases and unzip wow-questreader entire folder into your WoW addon folder, generally located at `C:\Program Files (x86)\World of Warcraft\_retail_\Interface\AddOns`
 
 This will add a "Read Quest" button to the bottom of the quest frame that will read the quest. There are also some Addon options for enabling/disabling the minimap icon and toggling auto-read on or off.
 
@@ -27,5 +27,5 @@ Toggle auto-read on/off
 
 
 # BUGS
-When auto-play is enabled, quest dialogue read overlaps with npc greeting and sounds horrible
-Settings toggle for minimap doesn't work
+- When auto-play is enabled, quest dialogue read overlaps with npc greeting and sounds horrible
+- Settings toggle for minimap doesn't work
