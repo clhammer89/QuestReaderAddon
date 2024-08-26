@@ -67,7 +67,7 @@ function LogQuestData()
     QuestReaderData = {}
     table.insert(QuestReaderData, questData)
 
-    print("Quest data logged successfully!")
+--    print("Quest data logged successfully!")
 end
 
 function PlayQuestAudio()
@@ -83,7 +83,7 @@ function PlayQuestAudio()
     elseif GossipFrame:IsVisible() then
         textType = "gossip"
     else
-        print("No relevant quest frame is open")
+--        print("No relevant quest frame is open")
         return
     end
 
@@ -91,8 +91,8 @@ function PlayQuestAudio()
     local soundPath = "Interface\\AddOns\\QuestReaderAddon\\Sounds\\" .. soundFile
 
     if PlaySoundFile(soundPath, "Dialog") then
-        print("Playing audio: " .. soundFile)
-        print("textType: " .. textType)
+--        print("Playing audio: " .. soundFile)
+--        print("textType: " .. textType)
     else
         print("Audio file not found: " .. soundFile)
     end
