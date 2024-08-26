@@ -1,5 +1,6 @@
 # WoW - Quest Reader
 
+# Note - This only works with The War Within quests, so far.
 World of Warcraft addon that reads quest text using a similar voice as the NPC quest giver. Each quest text dialogue has a generated audio file that was read using an AI voicemodel generated from their in-game audio.
 
 Usage:
@@ -29,3 +30,9 @@ Toggle auto-read on/off
 # BUGS
 - When auto-play is enabled, quest dialogue read overlaps with npc greeting and sounds horrible
 - Settings toggle for minimap doesn't work
+
+# LINKS
+ - Project on Curse: https://curseforge.com/wow/addons/wow-questreader
+ - Project on Wago: https://addons.wago.io/addons/wow-questreader
+ - Project on Github: https://github.com/clhammer89/wow-questreader
+ - Donate: https://www.paypal.com/donate/?hosted_button_id=54FT9M5AAV9KG
