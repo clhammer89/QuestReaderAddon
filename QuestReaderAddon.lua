@@ -9,7 +9,6 @@ QuestReaderAddonDB.minimapButton = QuestReaderAddonDB.minimapButton or { hide = 
 QuestReaderAddonDB.showMinimapButton = QuestReaderAddonDB.showMinimapButton ~= nil and QuestReaderAddonDB.showMinimapButton or true
 QuestReaderAddonDB.autoPlayEnabled = QuestReaderAddonDB.autoPlayEnabled
 
--- Near the top of the file, after local variables are declared
 local function InitializeAddonDB()
     QuestReaderAddonDB = QuestReaderAddonDB or {}
     QuestReaderAddonDB.minimapButton = QuestReaderAddonDB.minimapButton or { hide = false }
