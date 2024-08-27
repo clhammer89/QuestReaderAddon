@@ -10,7 +10,7 @@ function QuestReader:CreateSettings()
     local optionsFrame
     optionsFrame = CreateFrame("Frame", nil, nil, "VerticalLayoutFrame")
     optionsFrame.spacing = 4
-    local category, layout = Settings.RegisterCanvasLayoutCategory(optionsFrame, "Quest Reader |TInterface\\Icons\\INV_Misc_Book_09:18:18:0:0|t")
+    local category, layout = Settings.RegisterCanvasLayoutCategory(optionsFrame, "Quest Reader |T" .. addonName .. "\\cs_icon:18:18:0:0|t")
     category.ID = "Quest Reader"
     Settings.RegisterAddOnCategory(category)
 
