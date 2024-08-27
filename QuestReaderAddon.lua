@@ -2,7 +2,6 @@ local addonName, addon = ...
 local LDB = LibStub("LibDataBroker-1.1")
 local icon = LibStub("LibDBIcon-1.0")
 
-
 -- Initialize the saved variable if it doesn't exist
 QuestReaderAddonDB = QuestReaderAddonDB or {}
 QuestReaderAddonDB.minimapButton = QuestReaderAddonDB.minimapButton or { hide = false }
@@ -29,7 +28,7 @@ end)
 -- Create the LDB launcher
 local questReaderLauncher = LDB:NewDataObject("QuestReaderAddon", {
     type = "launcher",
-    icon = "Interface\\Icons\\INV_Misc_Book_09",
+    icon = "Interface\\AddOns\\" .. addonName .. "\\cs_icon",  -- Adjusted icon path
     OnClick = function(_, button)
         if button == "LeftButton" then
             addon:OpenSettings()
