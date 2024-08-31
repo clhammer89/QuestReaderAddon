@@ -6,6 +6,15 @@ EventUtil.ContinueOnAddOnLoaded(addonName, function()
     QuestReader:CreateSettings()
 end)
 
+local function OpenAudioLibraryUI()
+    if QuestReaderAudioLibraryUI then
+        QuestReaderAudioLibraryUI:Show()
+        QuestReaderAudioLibraryUI:PopulateList()
+    else
+        print("Quest Audio Library UI is not available.")
+    end
+end
+
 function QuestReader:CreateSettings()
     local optionsFrame
     optionsFrame = CreateFrame("Frame", nil, nil, "VerticalLayoutFrame")
@@ -61,10 +70,16 @@ function QuestReader:CreateSettings()
                 QuestReaderAddonDB.showMinimapButton = not QuestReaderAddonDB.showMinimapButton
                 QuestReaderAddonDB.minimapButton.hide = not QuestReaderAddonDB.showMinimapButton
                 addon.UpdateMinimapButtonVisibility()
-                
             end
         end)
     end
+
+    -- Add the Open Audio Library button
+    local openLibraryButton = CreateFrame("Button", nil, optionsFrame, "UIPanelButtonTemplate")
+    openLibraryButton:SetText("Open Audio Library")
+    openLibraryButton:SetSize(150, 25)
+    openLibraryButton.layoutIndex = GetLayoutIndex()
+    openLibraryButton:SetScript("OnClick", OpenAudioLibraryUI)
 
     optionsFrame:Layout()
 end
