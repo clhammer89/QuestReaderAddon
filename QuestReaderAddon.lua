@@ -116,73 +116,73 @@ local function InitializeQuestFrameButtons()
     end)
 
     -- Create the Play/Stop button for the QuestFrame
-    local questFramePlayStopButton = CreateFrame("Button", "QuestReaderPlayStopButtonFrame", QuestFrame)
-    questFramePlayStopButton:SetSize(21, 21)
-    questFramePlayStopButton:SetPoint("LEFT", questFrameButton, "RIGHT", 5, 0)
+    --local questFramePlayStopButton = CreateFrame("Button", "QuestReaderPlayStopButtonFrame", QuestFrame)
+    --questFramePlayStopButton:SetSize(21, 21)
+    --questFramePlayStopButton:SetPoint("LEFT", questFrameButton, "RIGHT", 5, 0)
 
     -- Create textures for play and stop icons
-    local playTexture = questFramePlayStopButton:CreateTexture(nil, "ARTWORK")
-    playTexture:SetTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
-    playTexture:SetAllPoints(questFramePlayStopButton)
+    --local playTexture = questFramePlayStopButton:CreateTexture(nil, "ARTWORK")
+    --playTexture:SetTexture("Interface\\Buttons\\UI-SpellbookIcon-NextPage-Up")
+    --playTexture:SetAllPoints(questFramePlayStopButton)
 
-    local stopTexture = questFramePlayStopButton:CreateTexture(nil, "ARTWORK")
-    stopTexture:SetTexture("Interface\\Buttons\\UI-StopButton")
-    stopTexture:SetAllPoints(questFramePlayStopButton)
+    --local stopTexture = questFramePlayStopButton:CreateTexture(nil, "ARTWORK")
+    --stopTexture:SetTexture("Interface\\Buttons\\UI-StopButton")
+    --stopTexture:SetAllPoints(questFramePlayStopButton)
 
-    local function UpdatePlayStopButton()
-        if addon.SoundQueue and addon.SoundQueue:IsPlaying() then
-            playTexture:Hide()
-            stopTexture:Show()
-        else
-            playTexture:Show()
-            stopTexture:Hide()
-        end
-    end
+    --local function UpdatePlayStopButton()
+    --    if addon.SoundQueue and addon.SoundQueue:IsPlaying() then
+    --        playTexture:Hide()
+    --        stopTexture:Show()
+    --    else
+    --        playTexture:Show()
+    --        stopTexture:Hide()
+    --    end
+    --end
 
-    questFramePlayStopButton:SetScript("OnClick", function()
-        if addon.SoundQueue then
-            if addon.SoundQueue:IsPlaying() then
-                addon.SoundQueue:StopCurrentSound()
-            else
-                PlayQuestAudio()
-            end
-            UpdatePlayStopButton()
-            if QuestReaderSoundQueueUI and QuestReaderSoundQueueUI.UpdateDisplay then
-                QuestReaderSoundQueueUI:UpdateDisplay()
-            end
-        end
-    end)
+    --questFramePlayStopButton:SetScript("OnClick", function()
+    --    if addon.SoundQueue then
+    --        if addon.SoundQueue:IsPlaying() then
+     --           addon.SoundQueue:StopCurrentSound()
+   --         else
+    --            PlayQuestAudio()
+    --        end
+     --       UpdatePlayStopButton()
+    --        if QuestReaderSoundQueueUI and QuestReaderSoundQueueUI.UpdateDisplay then
+    --            QuestReaderSoundQueueUI:UpdateDisplay()
+    --        end
+    --    end
+    --end)
 
     -- Initial setup
-    UpdatePlayStopButton()
+    --UpdatePlayStopButton()
 
     -- Make UpdatePlayStopButton accessible to the addon
-    addon.UpdatePlayStopButton = UpdatePlayStopButton
+    --addon.UpdatePlayStopButton = UpdatePlayStopButton
 
     -- Hook the SoundQueue methods to update the button state
-    local function HookSoundQueueMethod(methodName)
-        if addon.SoundQueue and addon.SoundQueue[methodName] then
-            local originalMethod = addon.SoundQueue[methodName]
-            addon.SoundQueue[methodName] = function(self, ...)
-                originalMethod(self, ...)
-                UpdatePlayStopButton()
-            end
-        end
-    end
+    --local function HookSoundQueueMethod(methodName)
+    --    if addon.SoundQueue and addon.SoundQueue[methodName] then
+    --        local originalMethod = addon.SoundQueue[methodName]
+     --       addon.SoundQueue[methodName] = function(self, ...)
+     --           originalMethod(self, ...)
+     --           UpdatePlayStopButton()
+     --       end
+    --    end
+    --end
 
-    HookSoundQueueMethod("PlaySound")
-    HookSoundQueueMethod("StopCurrentSound")
+    --HookSoundQueueMethod("PlaySound")
+    --HookSoundQueueMethod("StopCurrentSound")
 end
 
-local function UpdatePlayStopButton()
-    if addon.SoundQueue and addon.SoundQueue:IsPlaying() then
-        playTexture:Hide()
-        stopTexture:Show()
-    else
-        playTexture:Show()
-        stopTexture:Hide()
-    end
-end
+--local function UpdatePlayStopButton()
+--    if addon.SoundQueue and addon.SoundQueue:IsPlaying() then
+--        playTexture:Hide()
+ --       stopTexture:Show()
+ --   else
+--        playTexture:Show()
+--        stopTexture:Hide()
+--    end
+--end
 
 loadingFrame:SetScript("OnEvent", function(self, event, loadedAddonName)
     if loadedAddonName == addonName then
@@ -288,7 +288,7 @@ function addon.SoundQueue:PlaySound(soundData)
         soundData.nextSoundTimer = C_Timer.NewTimer(soundData.length, function()
             self:RemoveSoundFromQueue(soundData, true)
             self:PlayNextSound()  -- Add this line to play the next sound
-            addon.UpdatePlayStopButton()
+            --addon.UpdatePlayStopButton()
         end)
     else
         print("Failed to play audio: " .. soundData.soundFile)
@@ -379,7 +379,7 @@ function addon.SoundQueue:StopCurrentSound()
     if QuestReaderSoundQueueUI and QuestReaderSoundQueueUI.UpdateDisplay then
         QuestReaderSoundQueueUI:UpdateDisplay()
     end
-    addon.UpdatePlayStopButton()
+    --addon.UpdatePlayStopButton()
 end
 
 function addon.SoundQueue:RestoreVolumeAndPlayNext()
@@ -391,7 +391,7 @@ function addon.SoundQueue:RestoreVolumeAndPlayNext()
     end
     QuestReaderAddonDB.IsSoundPaused = false
     self:PlayNextSound()
-    addon.UpdatePlayStopButton()
+    --addon.UpdatePlayStopButton()
 end
 
 function addon.SoundQueue:RemoveSoundFromQueue(soundData, finishedPlaying)
