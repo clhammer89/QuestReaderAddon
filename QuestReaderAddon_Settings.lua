@@ -61,15 +61,19 @@ function QuestReader:CreateSettings()
         checkButton:SetHitRectInsets(0, -checkButton.text:GetWidth(), 0, 0)
         checkButton.HoverBackground = nil
         checkButton:SetChecked(QuestReaderAddonDB[keyInfo.option])
-        checkButton:SetScript("OnClick", function()
-            QuestReaderAddonDB[keyInfo.option] = checkButton:GetChecked()
+        checkButton:SetScript("OnClick", function(self)
+            QuestReaderAddonDB[keyInfo.option] = self:GetChecked()
             checkButton:SetChecked(QuestReaderAddonDB[keyInfo.option])
             
             -- Handle specific actions for certain options
             if keyInfo.option == "showMinimapButton" then
-                QuestReaderAddonDB.showMinimapButton = not QuestReaderAddonDB.showMinimapButton
-                QuestReaderAddonDB.minimapButton.hide = not QuestReaderAddonDB.showMinimapButton
-                addon.UpdateMinimapButtonVisibility()
+                checkButton:SetScript("OnClick", function(self)
+                    QuestReaderAddonDB.showMinimapButton = self:GetChecked()
+                    addon.UpdateMinimapButtonVisibility()
+                end)
+                checkButton:SetScript("OnShow", function(self)
+                    self:SetChecked(QuestReaderAddonDB.showMinimapButton)
+                end)
             end
         end)
     end

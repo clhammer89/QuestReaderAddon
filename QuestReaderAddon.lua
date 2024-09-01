@@ -2,9 +2,6 @@ local addonName, addon = ...
 local LDB = LibStub("LibDataBroker-1.1")
 local icon = LibStub("LibDBIcon-1.0")
 
-
-addon.originalDialogVolume = nil
-
 -- Initialize the saved variable if it doesn't exist
 QuestReaderAddonDB = QuestReaderAddonDB or {}
 QuestReaderAddonDB.minimapButton = QuestReaderAddonDB.minimapButton or { hide = false }
@@ -14,21 +11,16 @@ QuestReaderAddonDB.autoPlayEnabled = QuestReaderAddonDB.autoPlayEnabled
 local function InitializeAddonDB()
     QuestReaderAddonDB = QuestReaderAddonDB or {}
     QuestReaderAddonDB.minimapButton = QuestReaderAddonDB.minimapButton or { hide = false }
-    QuestReaderAddonDB.showMinimapButton = QuestReaderAddonDB.showMinimapButton ~= nil and QuestReaderAddonDB.showMinimapButton or true
+    if QuestReaderAddonDB.showMinimapButton == nil then
+        QuestReaderAddonDB.showMinimapButton = true
+    end
+    if QuestReaderAddonDB.minimapIconPosition == nil then
+        QuestReaderAddonDB.minimapIconPosition = {}
+    end
     QuestReaderAddonDB.autoPlayEnabled = QuestReaderAddonDB.autoPlayEnabled
     QuestReaderAddonDB.IsPaused = false
     QuestReaderAddonDB.IsSoundPaused = false
 end
-
--- Create a frame to listen for the ADDON_LOADED event
-local loadingFrame = CreateFrame("Frame")
-loadingFrame:RegisterEvent("ADDON_LOADED")
-loadingFrame:SetScript("OnEvent", function(self, event, loadedAddonName)
-    if loadedAddonName == addonName then
-        InitializeAddonDB()
-        loadingFrame:UnregisterEvent("ADDON_LOADED")
-    end
-end)
 
 -- Create the LDB launcher
 local questReaderLauncher = LDB:NewDataObject("QuestReaderAddon", {
@@ -45,31 +37,60 @@ local questReaderLauncher = LDB:NewDataObject("QuestReaderAddon", {
     end,
 })
 
-
-function addon:OpenSettings()
-    InterfaceOptionsFrame_OpenToCategory("Quest Reader")
-    InterfaceOptionsFrame_OpenToCategory("Quest Reader") -- Call twice to ensure it opens
-end
-
-function PlayQuestAudio()
-    local questID = GetQuestID()
-    local textType = ""
-
-    if QuestFrameDetailPanel:IsVisible() then
-        textType = "description"
-    elseif QuestFrameProgressPanel:IsVisible() then
-        textType = "progress"
-    elseif QuestFrameRewardPanel:IsVisible() then
-        textType = "completion"
-    elseif GossipFrame:IsVisible() then
-        textType = "gossip"
+local function UpdateMinimapButtonVisibility()
+    if QuestReaderAddonDB.showMinimapButton then
+        icon:Show("QuestReaderAddon")
+        C_Timer.After(0.1, function()
+            local minimapButton = icon:GetMinimapButton("QuestReaderAddon")
+            if minimapButton and QuestReaderAddonDB.minimapIconPosition.point then
+                minimapButton:ClearAllPoints()
+                minimapButton:SetPoint(
+                    QuestReaderAddonDB.minimapIconPosition.point,
+                    Minimap,
+                    QuestReaderAddonDB.minimapIconPosition.relPoint,
+                    QuestReaderAddonDB.minimapIconPosition.x,
+                    QuestReaderAddonDB.minimapIconPosition.y
+                )
+            end
+        end)
     else
-        return
+        icon:Hide("QuestReaderAddon")
     end
-
-    addon.SoundQueue:AddSound(questID, textType)
 end
+addon.UpdateMinimapButtonVisibility = UpdateMinimapButtonVisibility
 
+-- Create a frame to listen for the ADDON_LOADED event
+local loadingFrame = CreateFrame("Frame")
+loadingFrame:RegisterEvent("ADDON_LOADED")
+loadingFrame:SetScript("OnEvent", function(self, event, loadedAddonName)
+    if loadedAddonName == addonName then
+        InitializeAddonDB()
+        if questReaderLauncher then
+            icon:Register("QuestReaderAddon", questReaderLauncher, {
+                hide = not QuestReaderAddonDB.showMinimapButton,
+                position = QuestReaderAddonDB.minimapIconPosition
+            })
+            C_Timer.After(0.5, function()
+                UpdateMinimapButtonVisibility()
+                local minimapButton = icon:GetMinimapButton("QuestReaderAddon")
+                if minimapButton then
+                    minimapButton:HookScript("OnDragStop", function()
+                        local point, _, relPoint, x, y = minimapButton:GetPoint()
+                        QuestReaderAddonDB.minimapIconPosition = {
+                            point = point,
+                            relPoint = relPoint,
+                            x = x,
+                            y = y
+                        }
+                    end)
+                end
+            end)
+        else
+            print("Error: questReaderLauncher is nil")
+        end
+        loadingFrame:UnregisterEvent("ADDON_LOADED")
+    end
+end)
 -- Create the button for the QuestFrame
 local questFrameButton = CreateFrame("Button", "QuestReaderButtonFrame", QuestFrame, "UIPanelButtonTemplate")
 questFrameButton:SetSize(90, 21) -- Adjusted size to match the working file
@@ -170,20 +191,13 @@ loadingFrame:SetScript("OnEvent", function(self, event, loadedAddonName)
     end
 end)
 
-local function UpdateMinimapButtonVisibility()
-    if QuestReaderAddonDB.showMinimapButton then
-        icon:Show("QuestReaderAddon")
-    else
-        icon:Hide("QuestReaderAddon")
-    end
+-- Slash command to toggle minimap button
+SLASH_QRTOGGLE1 = '/qrtoggle'
+SlashCmdList["QRTOGGLE"] = function()
+    QuestReaderAddonDB.showMinimapButton = not QuestReaderAddonDB.showMinimapButton
+    UpdateMinimapButtonVisibility()
+    print("Minimap button visibility: " .. tostring(QuestReaderAddonDB.showMinimapButton))
 end
-
-addon.UpdateMinimapButtonVisibility = UpdateMinimapButtonVisibility
-
--- Register the icon with LibDBIcon
-icon:Register("QuestReaderAddon", questReaderLauncher, QuestReaderAddonDB.minimapButton)
-
-UpdateMinimapButtonVisibility()
 
 -- Function to automatically play quest audio
 local function AutoPlayQuestAudio()
@@ -489,14 +503,6 @@ SlashCmdList["QUESTREADERAUTO"] = function(msg)
     print("Quest Reader Auto-Play: " .. (QuestReaderAddonDB.autoPlayEnabled and "Enabled" or "Disabled"))
 end
 
-SLASH_QRTOGGLE1 = '/qrtoggle'
-SlashCmdList["QRTOGGLE"] = function()
-    QuestReaderAddonDB.showMinimapButton = not QuestReaderAddonDB.showMinimapButton
-    QuestReaderAddonDB.minimapButton.hide = not QuestReaderAddonDB.showMinimapButton
-    UpdateMinimapButtonVisibility()
-    print("Minimap button visibility: " .. tostring(QuestReaderAddonDB.showMinimapButton))
-end
-
 SLASH_QRPAUSE1 = '/qrpause'
 SlashCmdList["QRPAUSE"] = function()
     addon.SoundQueue:PauseQueue()
@@ -516,4 +522,15 @@ SLASH_QRCLEAR1 = '/qrclear'
 SlashCmdList["QRCLEAR"] = function()
     addon.SoundQueue:RemoveAllSoundsFromQueue()
     print("Quest Reader sound queue cleared.")
+end
+
+local function SaveMinimapIconPosition()
+    local position = icon:GetMinimapButton("QuestReaderAddon"):GetPoint()
+    QuestReaderAddonDB.minimapIconPosition.point, _, QuestReaderAddonDB.minimapIconPosition.relPoint, QuestReaderAddonDB.minimapIconPosition.x, QuestReaderAddonDB.minimapIconPosition.y = position
+end
+
+local minimapIcon = icon:GetMinimapButton("QuestReaderAddon")
+if minimapIcon then
+    minimapIcon:HookScript("OnDragStop", SaveMinimapIconPosition)
+    minimapIcon:HookScript("OnMouseUp", SaveMinimapIconPosition)
 end
