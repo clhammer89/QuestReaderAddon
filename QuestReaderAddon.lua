@@ -271,7 +271,10 @@ function addon.SoundQueue:AddSoundToQueue(questID, textType)
 
     -- If the sound queue only contains one sound, play it immediately
     if self:GetQueueSize() == 1 and not QuestReaderAddonDB.IsPaused and not self:IsPlaying() and not QuestReaderAddonDB.IsSoundPaused then
-        self:PlaySound(soundData)
+        -- Delay shortly to account for greeting audio
+        C_Timer.After(2, function()
+            self:PlaySound(soundData)
+        end)
     end
 
     -- You might want to update UI here
@@ -280,10 +283,10 @@ end
 
 function addon.SoundQueue:PlaySound(soundData)
     soundData.isPlaying = true
-    soundData.soundHandle = PlaySoundFile(soundData.soundPath, "Dialog")
+    soundData.isPlaying, soundData.soundHandle = PlaySoundFile(soundData.soundPath, "Dialog")
 
     if soundData.soundHandle then
-        -- print("Playing audio: " .. soundData.soundFile)
+        print("Playing audio: " .. soundData.soundFile)
         
         soundData.nextSoundTimer = C_Timer.NewTimer(soundData.length, function()
             self:RemoveSoundFromQueue(soundData, true)
@@ -354,12 +357,9 @@ end
 
 function addon.SoundQueue:StopCurrentSound()
     local currentSound = self:GetCurrentSound()
-    if currentSound and currentSound.isPlaying then
-        -- Save the current dialog volume
-        addon.originalDialogVolume = GetCVar("Sound_DialogVolume")
-        
+    if currentSound and currentSound.isPlaying then        
         -- Mute the dialog channel
-        SetCVar("Sound_DialogVolume", 0)
+        StopSound(currentSound.soundHandle)
         
         if currentSound.nextSoundTimer then
             currentSound.nextSoundTimer:Cancel()
@@ -367,30 +367,12 @@ function addon.SoundQueue:StopCurrentSound()
         
         currentSound.isPlaying = false
         table.remove(self.sounds, 1)
-        print("Removed current sound from queue. Please wait " .. tostring(currentSound.length) .. " seconds.")
-
-        -- Schedule volume restoration and next sound play
-        C_Timer.After(currentSound.length, function()
-            self:RestoreVolumeAndPlayNext()
-        end)
     else
         print("No sound currently playing")
     end
     if QuestReaderSoundQueueUI and QuestReaderSoundQueueUI.UpdateDisplay then
         QuestReaderSoundQueueUI:UpdateDisplay()
     end
-    --addon.UpdatePlayStopButton()
-end
-
-function addon.SoundQueue:RestoreVolumeAndPlayNext()
-    if addon.originalDialogVolume then
-        SetCVar("Sound_DialogVolume", addon.originalDialogVolume)
-        addon.originalDialogVolume = nil
-        -- print("Restored dialog volume")
-        print("You may resume reading quests.")
-    end
-    QuestReaderAddonDB.IsSoundPaused = false
-    self:PlayNextSound()
     --addon.UpdatePlayStopButton()
 end
 
@@ -423,20 +405,8 @@ function addon.SoundQueue:RemoveSoundFromQueue(soundData, finishedPlaying)
     if removedIndex == 1 and not QuestReaderAddonDB.IsPaused then
         local nextSoundData = self:GetCurrentSound()
         if nextSoundData then
-            -- Ensure volume is restored before playing next sound
-            if addon.originalDialogVolume then
-                SetCVar("Sound_DialogVolume", addon.originalDialogVolume)
-                addon.originalDialogVolume = nil
-                print("Restored dialog volume before playing next sound")
-            end
             self:PlaySound(nextSoundData)
         end
-    end
-    if self:IsEmpty() and addon.originalDialogVolume then
-        -- Restore the original dialog volume
-        SetCVar("Sound_DialogVolume", addon.originalDialogVolume)
-        addon.originalDialogVolume = nil
-        print("Restored dialog volume")
     end
 
     -- You might want to update UI here
@@ -456,28 +426,32 @@ function addon.SoundQueue:RemoveAllSoundsFromQueue()
     end
 end
 
--- Modify your existing PlayQuestAudio function to use the queue
-function PlayQuestAudio()
-    local questID = GetQuestID()
-    local textType = ""
+function PlayQuestAudio(textType)
+    questID = GetQuestID()
+    if not textType then
+        print("No questID provided. Using default GetQuestID(). Quest ID: ", questID)
 
-    if QuestFrameDetailPanel:IsVisible() then
-        textType = "description"
-    elseif QuestFrameProgressPanel:IsVisible() then
-        textType = "progress"
-    elseif QuestFrameRewardPanel:IsVisible() then
-        textType = "completion"
-    elseif GossipFrame:IsVisible() then
-        textType = "gossip"
-    else
-        return
+        -- Initialize textType based on visible panels
+        if QuestFrameDetailPanel:IsVisible() then
+            textType = "description"
+        elseif QuestFrameProgressPanel:IsVisible() then
+            textType = "progress"
+        elseif QuestFrameRewardPanel:IsVisible() then
+            textType = "completion"
+        elseif GossipFrame:IsVisible() then
+            textType = "gossip"
+        else
+            return
+        end
     end
 
-    addon.SoundQueue:AddSoundToQueue(questID, textType)
+    -- Debug: Ensure questID and textType are valid before adding to the queue
+    if questID and textType ~= "" then
+        addon.SoundQueue:AddSoundToQueue(questID, textType)
+    end
 end
 
 local function OnPlayerLogout()
-    RestoreDialogVolume()
     if addon.SoundQueue then
         local currentSound = addon.SoundQueue:GetCurrentSound()
         if currentSound and currentSound.nextSoundTimer then
@@ -485,6 +459,32 @@ local function OnPlayerLogout()
         end
     end
 end
+
+-- Event Handling for Quest Dialog Events
+local questEventFrame = CreateFrame("Frame")
+questEventFrame:RegisterEvent("QUEST_DETAIL")
+questEventFrame:RegisterEvent("QUEST_PROGRESS")
+questEventFrame:RegisterEvent("QUEST_COMPLETE")
+questEventFrame:RegisterEvent("QUEST_FINISHED")
+
+questEventFrame:SetScript("OnEvent", function(self, event, ...)
+    -- Map event to appropriate textType
+    local textType = ""
+    if event == "QUEST_DETAIL" then
+        textType = "description"
+    elseif event == "QUEST_PROGRESS" then
+        textType = "progress"
+    elseif event == "QUEST_COMPLETE" then
+        textType = "completion"
+    end
+
+    if textType ~= "" then
+        PlayQuestAudio(textType)  -- Call PlayQuestAudio with questID and textType from event
+    elseif event == "QUEST_FINISHED" then
+        addon.SoundQueue:StopCurrentSound() -- Stop sound when the quest dialog finishes
+        addon.SoundQueue:RemoveAllSoundsFromQueue()
+    end
+end)
 
 local logoutFrame = CreateFrame("Frame")
 logoutFrame:RegisterEvent("PLAYER_LOGOUT")
