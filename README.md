@@ -23,14 +23,18 @@ Toggle auto-read on/off
  - Only EN language support at the moment, I'll work on additional language support in the future
  - The voice/audio quality isn't great. Due to the sheer number of audio files generated, I wanted to keep the first pass at a minimal size. Better audio quality coming in the future
  - This only covers The War Within quests at the moment, other expansions coming soon.
- - There will be some janky reading of quest text and sub-par voice audio for some of them. I just started throwing this together this week and haven't had a chance to review all audio yet.
+ - There will be some janky reading of quest text and sub-par voice audio for some of them. I'll be working on improving this in the future.
  - I'll be adding in Gossip text in the future as well. I'm still working on sourcing this data.
 
 
 # BUGS
-- When auto-play is enabled, quest dialogue read overlaps with npc greeting and sounds horrible
-- Settings toggle for minimap doesn't work
+ - Missing quests. If you receive "Quest sound file not found: " or "Failed to play audio: " the quest is missing. Feel free to shoot me a comment with the missing quest ID and I'll add it to the list. 
+ - Missing quests cont. The source I utilize for quest info can sometimes take several days before it has complete info. I try to source new quests every day, so if one is missing it may be added the next.
 
+# SHOUT OUTS AND THANKS
+ - Thank you Curseforge user Paratusjv for providing an update that provided additional stop functionality and support for quest UI addons! 
+ - Everyone who has provided feedback and support! 
+ 
 # LINKS
  - Project on Curse: https://curseforge.com/wow/addons/wow-questreader
  - Project on Wago: https://addons.wago.io/addons/wow-questreader

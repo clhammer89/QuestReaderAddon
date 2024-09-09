@@ -245,7 +245,7 @@ function addon.SoundQueue:AddSoundToQueue(questID, textType)
 
     local soundLength = QuestReaderSoundLengths[soundFile]
     if not soundLength then
-        print("Sound file length not found: " .. soundFile)
+        print("Quest sound file not found: " .. soundFile)
         return
     end
 
@@ -272,9 +272,13 @@ function addon.SoundQueue:AddSoundToQueue(questID, textType)
     -- If the sound queue only contains one sound, play it immediately
     if self:GetQueueSize() == 1 and not QuestReaderAddonDB.IsPaused and not self:IsPlaying() and not QuestReaderAddonDB.IsSoundPaused then
         -- Delay shortly to account for greeting audio
-        C_Timer.After(2, function()
+        if QuestReaderAddonDB.autoPlayEnabled then
+            C_Timer.After(2, function()
+                self:PlaySound(soundData)
+            end)
+        else
             self:PlaySound(soundData)
-        end)
+        end
     end
 
     -- You might want to update UI here
@@ -286,7 +290,7 @@ function addon.SoundQueue:PlaySound(soundData)
     soundData.isPlaying, soundData.soundHandle = PlaySoundFile(soundData.soundPath, "Dialog")
 
     if soundData.soundHandle then
-        print("Playing audio: " .. soundData.soundFile)
+        -- print("Playing audio: " .. soundData.soundFile)
         
         soundData.nextSoundTimer = C_Timer.NewTimer(soundData.length, function()
             self:RemoveSoundFromQueue(soundData, true)
@@ -368,7 +372,7 @@ function addon.SoundQueue:StopCurrentSound()
         currentSound.isPlaying = false
         table.remove(self.sounds, 1)
     else
-        print("No sound currently playing")
+        -- print("No sound currently playing")
     end
     if QuestReaderSoundQueueUI and QuestReaderSoundQueueUI.UpdateDisplay then
         QuestReaderSoundQueueUI:UpdateDisplay()
@@ -429,7 +433,7 @@ end
 function PlayQuestAudio(textType)
     questID = GetQuestID()
     if not textType then
-        print("No questID provided. Using default GetQuestID(). Quest ID: ", questID)
+        -- print("No questID provided. Using default GetQuestID(). Quest ID: ", questID)
 
         -- Initialize textType based on visible panels
         if QuestFrameDetailPanel:IsVisible() then
@@ -478,7 +482,7 @@ questEventFrame:SetScript("OnEvent", function(self, event, ...)
         textType = "completion"
     end
 
-    if textType ~= "" then
+    if textType ~= "" and QuestReaderAddonDB.autoPlayEnabled then
         PlayQuestAudio(textType)  -- Call PlayQuestAudio with questID and textType from event
     elseif event == "QUEST_FINISHED" then
         addon.SoundQueue:StopCurrentSound() -- Stop sound when the quest dialog finishes
