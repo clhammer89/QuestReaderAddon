@@ -34,8 +34,8 @@ Toggle auto-read on/off
  - Missing quests cont. The source I utilize for quest info can sometimes take several days before it has complete info. I try to source new quests every day, so if one is missing it may be added the next.
 
 # SHOUT OUTS AND THANKS
- - Thank you Curseforge user Paratusjv for providing an update that provided additional stop functionality and support for quest UI addons! 
- - Everyone who has provided feedback and support! 
+ - Shout out to Curseforge user Paratusjv for providing an update that provided additional stop functionality and support for quest UI addons! 
+ - Everyone who has provided feedback and support! Thank you HAQ!
  
 # LINKS
  - Project on Curse: https://curseforge.com/wow/addons/wow-questreader
