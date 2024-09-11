@@ -15,7 +15,11 @@ if QuestReaderAddonDB.autoPlayEnabled == nil then
 else
     QuestReaderAddonDB.autoPlayEnabled = QuestReaderAddonDB.autoPlayEnabled
 end
- QuestReaderAddonDB.muteGossip = QuestReaderAddonDB.muteGossip
+if QuestReaderAddonDB.muteGossip == nil then
+    QuestReaderAddonDB.muteGossip = true
+else
+    QuestReaderAddonDB.muteGossip = QuestReaderAddonDB.muteGossip
+end
 
 local function InitializeAddonDB()
     QuestReaderAddonDB = QuestReaderAddonDB or {}
@@ -31,7 +35,11 @@ local function InitializeAddonDB()
     else
         QuestReaderAddonDB.autoPlayEnabled = QuestReaderAddonDB.autoPlayEnabled
     end
-    QuestReaderAddonDB.muteGossip = QuestReaderAddonDB.muteGossip
+    if QuestReaderAddonDB.muteGossip == nil then
+        QuestReaderAddonDB.muteGossip = true
+    else
+        QuestReaderAddonDB.muteGossip = QuestReaderAddonDB.muteGossip
+    end
     QuestReaderAddonDB.IsPaused = false
     QuestReaderAddonDB.IsSoundPaused = false
 end
