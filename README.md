@@ -8,7 +8,7 @@ If downloading directly, download latest release here https://github.com/clhamme
 
 This will add a "Read Quest" button to the bottom of the quest frame that will read the quest. There are also some Addon options for enabling/disabling the minimap icon and toggling auto-read on or off.
 
-If you are using a quest UI addon like Immersion make sure to turn auto-play on.
+If you are using a quest UI addon like Immersion make sure to turn auto-play on. Test
 
 # /Commands:
 
