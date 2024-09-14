@@ -5,6 +5,8 @@
 ## Version: 1.0
 ## SavedVariables: QuestReaderAddonDB
 
+## OptionalDeps: QuestReaderPackWW
+
 # Libraries
 Libs\LibStub\LibStub.lua
 Libs\CallbackHandler-1.0\CallbackHandler-1.0.lua
@@ -12,8 +14,7 @@ Libs\LibDataBroker-1.1\LibDataBroker-1.1.lua
 Libs\LibDBIcon-1.0\LibDBIcon-1.0.lua
 
 # Addon files
+SoundLengths.lua
 QuestReaderAddon.lua
 QuestReaderAddon_Settings.lua
-QuestReaderSoundQueueUI.lua
-SoundLengths.lua
 QuestAudioLibraryUI.lua

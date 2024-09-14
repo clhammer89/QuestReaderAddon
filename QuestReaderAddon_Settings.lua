@@ -53,6 +53,7 @@ function QuestReader:CreateSettings()
     local settingsInfo = {
         { option = "autoPlayEnabled", detail = "Auto-play quest audio" },
         { option = "showMinimapButton", detail = "Show minimap button" },
+        { option = "muteGossip", detail = "Mute greetings (instant autoplay)" },
     }
 
     for _, keyInfo in ipairs(settingsInfo) do
