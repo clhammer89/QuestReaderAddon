@@ -1,8 +1,8 @@
 ## Interface: 110002
 ## Title: Quest Reader Addon
-## Notes: Plays quest audio based on quest ID and text type.
+## Notes: Plays AI-generated quest voiceovers.
 ## Author: clhammer weirdautomation@gmail.com
-## Version: 1.0
+## Version: 1.2
 ## SavedVariables: QuestReaderAddonDB
 
 ## OptionalDeps: QuestReaderPackWW
