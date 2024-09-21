@@ -302,7 +302,11 @@ function PlayQuestAudio(textType, skipDelay)
         elseif GossipFrame:IsVisible() then
             textType = "gossip"
         else
-            return
+            if (lastTextType == "") then
+                return
+            else
+                textType = lastTextType
+            end
         end
     end
 
@@ -355,6 +359,10 @@ local function OnPlayerLogout()
     UnmuteDialogChannel()
 end
 
+-- Keybindings
+BINDING_HEADER_QUESTREADERADDON = "Quest Reader Addon"
+BINDING_NAME_PLAYACTIVEQUEST = "Play active quest voiceover"
+
 -- Event Handling for Quest Dialog Events
 local questEventFrame = CreateFrame("Frame")
 questEventFrame:RegisterEvent("QUEST_DETAIL")
@@ -378,8 +386,11 @@ questEventFrame:SetScript("OnEvent", function(self, event, ...)
     elseif event == "QUEST_FINISHED" then
         StopCurrentSound() -- Stop sound when the quest dialog finishes
     end
+
+    lastTextType = textType
 end)
 
+lastTextType = textType
 local logoutFrame = CreateFrame("Frame")
 logoutFrame:RegisterEvent("PLAYER_LOGOUT")
 logoutFrame:SetScript("OnEvent", OnPlayerLogout)

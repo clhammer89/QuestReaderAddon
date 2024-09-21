@@ -1,0 +1,5 @@
+<Bindings>
+  <Binding name="PLAYACTIVEQUEST" default="F6">
+    PlayQuestAudio(nil, true)
+  </Binding>
+</Bindings>
