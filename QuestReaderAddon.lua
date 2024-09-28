@@ -3,7 +3,8 @@ local LDB = LibStub("LibDataBroker-1.1")
 local icon = LibStub("LibDBIcon-1.0")
 
 local optionalSoundPacks = {
-    "QuestReaderPackWW"
+    "QuestReaderAddon_TWW_EN",
+    "QuestReaderAddon_TWW_FR"
 }
 
 -- Initialize the saved variable if it doesn't exist
