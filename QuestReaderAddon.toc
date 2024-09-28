@@ -1,11 +1,11 @@
 ## Interface: 110002
 ## Title: Quest Reader Addon
 ## Notes: Plays AI-generated quest voiceovers.
-## Author: clhammer weirdautomation@gmail.com
+## Author: clhammer weirdautomation@gmail.com, Paratus
 ## Version: 1.2
 ## SavedVariables: QuestReaderAddonDB
 
-## OptionalDeps: QuestReaderPackWW
+## OptionalDeps: QuestReaderAddon_TWW_EN, QuestReaderAddon_TWW_FR
 
 # Libraries
 Libs\LibStub\LibStub.lua
