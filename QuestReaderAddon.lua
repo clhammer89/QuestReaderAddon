@@ -197,40 +197,33 @@ function DetectSoundPacks()
             if loadable then
                 local pack = LoadSoundPackIfAvailable(depName)
                 if pack then
-                    addon.soundSources[name] = pack
+                    addon.soundSources = { [name] = pack }  -- Use only the detected pack
+                    hasEntries = true
+                    break 
                 end
             end
         end
     end
 
-    -- Count the entries in this sound pack
-    for key, sources in pairs(addon.soundSources) do
-        if not (next(sources) == nil) then
-            hasEntries = true
-            break
-        end
-    end
-
-    -- If no entries were found, create the popup dialog
-    if not hasEntries then
-        ShowNoSoundPacksDialog()
-    end
+--    if not hasEntries then
+--        ShowNoSoundPacksDialog()
+--    end
 end
 
-function ShowNoSoundPacksDialog()
-    -- Define the static popup dialog
-    StaticPopupDialogs["NO_SOUND_PACKS"] = {
-        text = "You're using Quest Reader Addon but you've not installed any Quest Reader sound packs.",
-        button1 = "OK",
-        timeout = 0,  -- No timeout
-        whileDead = true,  -- Allow showing while dead
-        hideOnEscape = true,  -- Allow closing by pressing the Escape key
-        preferredIndex = 3,  -- Prevents interference with other dialogs
-    }
+-- function ShowNoSoundPacksDialog()
+--     -- Define the static popup dialog
+--     StaticPopupDialogs["NO_SOUND_PACKS"] = {
+--         text = "You're using Quest Reader Addon but you've not installed any Quest Reader sound packs.",
+--         button1 = "OK",
+--         timeout = 0,  -- No timeout
+--         whileDead = true,  -- Allow showing while dead
+--         hideOnEscape = true,  -- Allow closing by pressing the Escape key
+--         preferredIndex = 3,  -- Prevents interference with other dialogs
+--     }-- 
 
-    -- Show the popup dialog
-    StaticPopup_Show("NO_SOUND_PACKS")
-end
+--     -- Show the popup dialog
+--     StaticPopup_Show("NO_SOUND_PACKS")
+-- end
 
 function GetCurrentSound()
     return addon.activeSound
